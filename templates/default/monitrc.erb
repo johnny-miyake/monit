@@ -12,23 +12,26 @@ set eventqueue
 <% end %>
 
 <% unless @node[:monit][:notify_email].nil? || @node[:monit][:notify_email] == '' %>
-
+  <% if @node[:monit][:skip_mailserver_config] %>
+# The mail server setting has been skipped by Chef. Please config it in conf.d if you need.
+  <% else %>
 set mailserver <%= @node["monit"]["mailserver"]["host"] %><%= " port #{@node["monit"]["mailserver"]["port"]}" if @node["monit"]["mailserver"]["port"] %>
-<% if @node["monit"]["mailserver"]["hostname"] %>
+    <% if @node["monit"]["mailserver"]["hostname"] %>
   using HOSTNAME "<%= @node["monit"]["mailserver"]["hostname"] %>"
-<% end %>
-<% if @node["monit"]["mailserver"]["username"] %>
+    <% end %>
+    <% if @node["monit"]["mailserver"]["username"] %>
   username "<%= @node["monit"]["mailserver"]["username"] %>"
-<% end %>
-<% if @node["monit"]["mailserver"]["password"] %>
+    <% end %>
+    <% if @node["monit"]["mailserver"]["password"] %>
   password "<%= @node["monit"]["mailserver"]["password"] %>"<%= " #{@node["monit"]["mailserver"]["password_suffix"]}" if @node["monit"]["mailserver"]["password_suffix"] %>
-<% end %>
-<% if @node["monit"]["mailserver"]["encryption"] %>
+    <% end %>
+    <% if @node["monit"]["mailserver"]["encryption"] %>
   using <%= @node["monit"]["mailserver"]["encryption"] %>
-<% end %>
-<% if @node["monit"]["mailserver"]["timeout"] %>
+    <% end %>
+    <% if @node["monit"]["mailserver"]["timeout"] %>
   with timeout <%= @node["monit"]["mailserver"]["timeout"] %> seconds
-<% end %>
+    <% end %>
+  <% end %>
 
 set mail-format {
   from: <%= @node["monit"]["mail_format"]["from"] %>

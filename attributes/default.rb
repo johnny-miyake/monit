@@ -1,3 +1,4 @@
+default["monit"]["skip_mailserver_config"] = nil
 default["monit"]["notify_email"]          = nil
 default["monit"]["alert_blacklist"]       = %w( action instance pid ppid )
 
