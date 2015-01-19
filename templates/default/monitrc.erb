@@ -11,7 +11,7 @@ set eventqueue
   <%= "slots #{@node["monit"]["eventqueue"]["slots"]}" if @node["monit"]["eventqueue"]["slots"] %>
 <% end %>
 
-<% unless @node[:monit][:notify_email].nil? || @node[:monit][:notify_email] == '' %>
+<% if @node[:monit][:notify_emails].any? %>
   <% if @node[:monit][:skip_mailserver_config] %>
 # The mail server setting has been skipped by Chef. Please config it in conf.d if you need.
   <% else %>
@@ -39,7 +39,9 @@ set mail-format {
   message: <%= @node["monit"]["mail_format"]["message"] %>
 }
 
-  set alert <%= @node["monit"]["notify_email"] %><%= " NOT ON { #{@node["monit"]["alert_blacklist"].join(", ")} }" unless @node["monit"]["alert_blacklist"].empty? %>
+  <% @node["monit"]["notify_emails"].each do |email| %>
+  set alert <%= email %><%= " NOT ON { #{@node["monit"]["alert_blacklist"].join(", ")} }" unless @node["monit"]["alert_blacklist"].empty? %>
+  <% end %>
 <% end %>
 
 set httpd port <%= @node["monit"]["port"] %>
